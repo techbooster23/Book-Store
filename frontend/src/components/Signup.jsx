@@ -1,7 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Login from './Login'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 function Signup() {
 
     const {
@@ -11,7 +13,29 @@ function Signup() {
         formState: { errors },
     } = useForm()
 
-    const onSubmit = (data) => console.log(data)
+    const navigate = useNavigate()
+    const onSubmit = async (data) => {
+        const userInfo = {
+            fullname : data.fullname,
+            email : data.email,
+            password : data.password
+        }
+
+        try {
+            const res = await axios.post("http://localhost:4001/user/signup", userInfo)
+            console.log(res.data)
+            localStorage.setItem("user",JSON.stringify(res.data.user))
+            toast.success(res.data.message)
+            // navigates to home page after registering
+            navigate('/ ')
+        }catch(err){
+            toast.error(err.response.data.message);
+            console.log("error : " , err);
+            
+        }
+        
+        
+    }
 
     return (
         <div id="my_modal_4" className="h-screen flex items-center justify-center">
@@ -28,9 +52,9 @@ function Signup() {
                     {/* Name */}
                     <label className=" flex  flex-col mt-4 gap-1">
                         Name
-                        <input type="text" className="grow w-80 px-3 rounded-md border outline-none py-2" placeholder="name" {...register("name", { required: true })} />
+                        <input type="text" className="grow w-80 px-3 rounded-md border outline-none py-2" placeholder="name" {...register("fullname", { required: true })} />
                         {/* errors will return when field validation fails  */}
-                        {errors.text && <span className='text-red-500 text-sm'>This field is required</span>}
+                        {errors.fullname && <span className='text-red-500 text-sm'>This field is required</span>}
                     </label>
 
                     {/* Email */}

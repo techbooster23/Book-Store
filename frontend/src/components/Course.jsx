@@ -1,9 +1,21 @@
-import React from 'react'
-import books from "../assets/books.json"
+import React , {useState , useEffect} from 'react'
 import Card from "./Card.jsx"
 import { Link } from 'react-router-dom'
+import axios from 'axios'   
+import dotenv from 'dotenv'
+
+
 
 function Course() {
+   const [books, setBooks] = useState([])
+   useEffect(() => {
+    const getBooks = async () => {
+        const { data } = await axios.get('http://localhost:4001/books');
+        setBooks(data);
+    }
+    getBooks()
+   }, [])
+  
     return (
         <>
             <div className='max-w-screen-2xl container mx-auto md:px-20 px-4 pt-28 justify-center text-center dark:bg-slate-900 dark:text-white'>

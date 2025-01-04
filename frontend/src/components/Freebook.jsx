@@ -1,12 +1,20 @@
-import React from 'react'
-import books from "../assets/books.json"
+import React, {useState, useEffect} from 'react'
 import Slider from "react-slick";
 import Card from "./Card.jsx";
+import axios from 'axios'
 
 function Freebook() {
-    const freebooks = books.filter((book) => {
-        return book.type === "Free";
-    });
+    const [books, setBooks] = useState([])
+   useEffect(() => {
+    const getBooks = async () => {
+        const { data } = await axios.get('http://localhost:4001/books');
+        const freebooks = data.filter(book => book.type === "Free");
+         
+        setBooks(freebooks);
+    }
+    getBooks()
+   }, [])
+
 
     var settings = {
         dots: true,
@@ -51,9 +59,9 @@ function Freebook() {
                 </h2>
                 <div className=' mt-4'>
                     <Slider {...settings}>
-                        {freebooks.map((book , id)=>{
+                        {books.map((book , _id)=>{
                             return (
-                                <Card key ={id} book = {book}/>
+                                <Card key ={_id} book = {book}/>
                             )
                         })}
                     </Slider>
